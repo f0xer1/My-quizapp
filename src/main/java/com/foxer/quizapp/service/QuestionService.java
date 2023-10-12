@@ -1,10 +1,9 @@
 package com.foxer.quizapp.service;
 
-import com.foxer.quizapp.Question;
+import com.foxer.quizapp.model.Question;
 import com.foxer.quizapp.dao.QuestionDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
