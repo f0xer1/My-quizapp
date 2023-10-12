@@ -3,24 +3,38 @@ package com.foxer.quizapp.service;
 import com.foxer.quizapp.Question;
 import com.foxer.quizapp.dao.QuestionDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class QuestionService {
     @Autowired
     QuestionDao questionDao;
-    public List<Question>  getAllQuestion() {
-      return questionDao.findAll();
+    public ResponseEntity<List<Question>>   getAllQuestion() {
+        try {
+            return new ResponseEntity<>(questionDao.findAll(), HttpStatus.OK) ;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST) ;
     }
 
-    public List<Question> getQuestionByCatogory(String category) {
-        return questionDao.findByCategory(category);
+    public ResponseEntity<List<Question>> getQuestionByCategory(String category) {
+        try {
+            return new ResponseEntity<>(questionDao.findByCategory(category), HttpStatus.OK) ;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST) ;
     }
 
-    public String addQuestion(Question question) {
+    public ResponseEntity< String> addQuestion(Question question) {
           questionDao.save(question);
-          return "success";
+          return new ResponseEntity<>("success",HttpStatus.CREATED) ;
     }
 }
