@@ -5,6 +5,7 @@ import com.foxer.quizapp.dao.QuizDao;
 import com.foxer.quizapp.model.Question;
 import com.foxer.quizapp.model.QuestionWrapper;
 import com.foxer.quizapp.model.Quiz;
+import com.foxer.quizapp.model.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +24,13 @@ public class QuizService {
     QuestionDao questionDao;
 
     public ResponseEntity<String> createQuiz(String category, Integer numQ, String title) {
-        List<Question> questions = questionDao.findRandomQuestionByCategory( category, numQ);
+        List<Question> questions = questionDao.findRandomQuestionByCategory(category, numQ);
 
         Quiz quiz = new Quiz();
         quiz.setTitle(title);
         quiz.setQuestions(questions);
         quizDao.save(quiz);
-        return  new ResponseEntity<>("success",HttpStatus.CREATED) ;
+        return new ResponseEntity<>("success", HttpStatus.CREATED);
     }
 
     public ResponseEntity<List<QuestionWrapper>> getQuizQuestion(Integer id) {
@@ -45,4 +46,18 @@ public class QuizService {
     }
 
 
+    public ResponseEntity<Integer> calculateResult(Integer id, List<Response> responses) {
+        Quiz quiz = quizDao.findById(id).get();
+        List<Question> questions = quiz.getQuestions();
+        int right = 0;
+        int i = 0;
+        for (Response response : responses) {
+            if (response.getResponse().equals(questions.get(i).getRightAnswer())) {
+                right++;
+            }
+
+            i++;
+        }
+        return new ResponseEntity<>(right, HttpStatus.OK);
+    }
 }
