@@ -3,13 +3,17 @@ package com.foxer.quizapp.service;
 import com.foxer.quizapp.dao.QuestionDao;
 import com.foxer.quizapp.dao.QuizDao;
 import com.foxer.quizapp.model.Question;
+import com.foxer.quizapp.model.QuestionWrapper;
 import com.foxer.quizapp.model.Quiz;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class QuizService {
@@ -27,4 +31,18 @@ public class QuizService {
         quizDao.save(quiz);
         return  new ResponseEntity<>("success",HttpStatus.CREATED) ;
     }
+
+    public ResponseEntity<List<QuestionWrapper>> getQuizQuestion(Integer id) {
+        Optional<Quiz> quizOptional = quizDao.findById(id);
+
+        List<QuestionWrapper> questionForUser = quizOptional.map(quiz -> quiz.getQuestions().stream()
+                        .map(q -> new QuestionWrapper(q.getId(), q.getQuestionTitle(), q.getOption1(), q.getOption2(),
+                                q.getOption3(), q.getOption4()))
+                        .collect(Collectors.toList()))
+                .orElseGet(ArrayList::new);
+
+        return ResponseEntity.ok(questionForUser);
+    }
+
+
 }
